@@ -6,6 +6,7 @@
 - [ADR-003: Server-Side Gemini API Integration via @google/genai](#adr-003-server-side-gemini-api-integration-via-googlegenai) (Accepted)
 - [ADR-004: Frictionless Demo Profile (No Login Wall)](#adr-004-frictionless-demo-profile-no-login-wall) (Accepted)
 - [ADR-007: Comprehensive Zero-Trust Security Hardening](#adr-007-comprehensive-zero-trust-security-hardening) (Accepted)
+- [ADR-008: Production SEO, Metadata, UX Polish & Dev Hygiene Standards](#adr-008-production-seo-metadata-ux-polish--dev-hygiene-standards) (Accepted)
 - [ADR-005: Africa's Talking SMS Deadline Alerts](#adr-005-africas-talking-sms-deadline-alerts) (Proposed)
 - [ADR-006: Tailored CV Bullet & Cover Letter Generator](#adr-006-tailored-cv-bullet--cover-letter-generator) (Proposed)
 
@@ -111,6 +112,36 @@ Implement end-to-end zero-trust security controls across the application:
 
 #### Consequences
 Resilient against OWASP Top 10 exploits, preventing unauthorized data tampering, scraper flooding, and API abuse.
+
+---
+
+### ADR-008: Production SEO, Metadata, UX Polish & Dev Hygiene Standards
+- Date: 2026-11-17
+- Status: Accepted
+- Supersedes: None
+
+#### Context
+For production excellence, social sharing (LinkedIn, Twitter, WhatsApp), discoverability by search engines (Google), accessibility (WCAG), and responsive UX across student smartphones in Uganda, the application must avoid generic titles, missing previews, dead buttons, unhelpful error states, and unoptimized JS bundles.
+
+#### Decision
+1. **Dynamic & Static SEO & Social Previews:**
+   - Configure Next.js App Router metadata with `metadataBase`, canonical URLs (`/`, `/login`), titles with template `%s | InternPilot`, meta descriptions, keywords, author/publisher metadata, Open Graph (1200x630), and Twitter Summary Large Image previews.
+   - Implement dynamic Edge OG image generation (`src/app/opengraph-image.tsx`) with fallback `public/og-image.png`.
+   - Implement `src/app/sitemap.ts` and `src/app/robots.ts` for search engine crawling.
+2. **Branded UX States:**
+   - Implement custom branded 404 page (`src/app/not-found.tsx`) and error boundary (`src/app/error.tsx`).
+   - Implement full-fidelity skeleton dashboard loading state (`src/app/loading.tsx`) and branded login loading card.
+3. **Frontend Accessibility & Interaction:**
+   - Enforce exactly one semantic H1 per page/view.
+   - Connect all metric stat cards and readiness gauge pills directly to the live opportunity feed filter.
+   - Add `aria-label` / `aria-hidden` attributes to all icon controls and form inputs.
+4. **Developer Hygiene & Bundle Optimization:**
+   - Explicitly disable client source maps in production (`productionBrowserSourceMaps: false`).
+   - Remove debugging console statements from production client bundles via compiler `removeConsole`.
+   - Enable Gzip/Brotli compression and package import optimization for `lucide-react`, reducing dashboard bundle size by over 24%.
+
+#### Consequences
+High search engine discoverability, crisp social preview cards when shared on WhatsApp or LinkedIn, resilient accessibility for screen readers, and fast, low-bandwidth load times for Ugandan mobile networks.
 
 ---
 

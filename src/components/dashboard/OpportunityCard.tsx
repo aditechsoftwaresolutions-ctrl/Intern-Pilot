@@ -155,6 +155,7 @@ export const OpportunityCard: React.FC<OpportunityCardProps> = ({
         <div className="flex items-center gap-1.5">
           <button
             onClick={() => onToggleSave(opportunity.id)}
+            aria-label={isSaved ? `Remove ${opportunity.title} from saved listings` : `Save ${opportunity.title}`}
             className={`p-2 rounded-xl border text-xs font-medium transition-all ${
               isSaved
                 ? "bg-amber-500/20 text-amber-300 border-amber-500/40"
@@ -162,18 +163,19 @@ export const OpportunityCard: React.FC<OpportunityCardProps> = ({
             }`}
             title={isSaved ? "Saved to your list" : "Save opportunity"}
           >
-            <Bookmark className={`w-4 h-4 ${isSaved ? "fill-amber-400" : ""}`} />
+            <Bookmark className={`w-4 h-4 ${isSaved ? "fill-amber-400" : ""}`} aria-hidden="true" />
           </button>
 
           <button
             onClick={() => onToggleApplied(opportunity.id)}
+            aria-label={isApplied ? `Mark ${opportunity.title} as not applied` : `Mark ${opportunity.title} as applied`}
             className={`px-3 py-2 rounded-xl border text-xs font-medium flex items-center gap-1.5 transition-all ${
               isApplied
                 ? "bg-emerald-500/20 text-emerald-300 border-emerald-500/40"
                 : "glass-button text-gray-300 hover:text-white"
             }`}
           >
-            <CheckCircle2 className={`w-4 h-4 ${isApplied ? "text-emerald-400" : ""}`} />
+            <CheckCircle2 className={`w-4 h-4 ${isApplied ? "text-emerald-400" : ""}`} aria-hidden="true" />
             <span>{isApplied ? "Applied" : "Mark Applied"}</span>
           </button>
         </div>
@@ -182,24 +184,35 @@ export const OpportunityCard: React.FC<OpportunityCardProps> = ({
           {onAskAbout && (
             <button
               onClick={() => onAskAbout(opportunity)}
+              aria-label={`Ask AI Advisor about ${opportunity.title}`}
               className="text-xs px-2.5 py-2 rounded-xl text-emerald-400 hover:text-emerald-300 hover:bg-emerald-500/10 transition-colors flex items-center gap-1"
               title="Ask Gemini how to position yourself for this listing"
             >
-              <Sparkles className="w-3.5 h-3.5" />
+              <Sparkles className="w-3.5 h-3.5" aria-hidden="true" />
               <span className="hidden sm:inline">Ask AI</span>
             </button>
           )}
 
-          {opportunity.link && (
+          {opportunity.link ? (
             <a
-              href={opportunity.link}
+              href={opportunity.link.startsWith("http") || opportunity.link.startsWith("mailto:") ? opportunity.link : `https://${opportunity.link}`}
               target="_blank"
               rel="noopener noreferrer"
-              className="px-3 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-black text-xs font-bold transition-all flex items-center gap-1"
+              aria-label={`Apply directly to ${opportunity.title} at ${opportunity.organization}`}
+              className="px-3 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-black text-xs font-bold transition-all flex items-center gap-1 shadow-sm"
             >
               <span>Apply</span>
-              <ExternalLink className="w-3.5 h-3.5" />
+              <ExternalLink className="w-3.5 h-3.5" aria-hidden="true" />
             </a>
+          ) : (
+            <button
+              type="button"
+              onClick={() => onAskAbout?.(opportunity)}
+              className="px-3 py-2 rounded-xl bg-emerald-500/15 hover:bg-emerald-500/25 text-emerald-300 border border-emerald-500/30 text-xs font-semibold transition-all flex items-center gap-1"
+              title="Direct link not listed. Ask AI Advisor for contact guidance."
+            >
+              <span>Ask Apply Info</span>
+            </button>
           )}
         </div>
       </div>

@@ -16,7 +16,22 @@ interface OpportunityFeedProps {
   onOpenIngest: () => void;
 }
 
-type FeedFilter = "all" | "match" | "saved" | "applied";
+export type FeedFilter = "all" | "match" | "saved" | "applied";
+
+interface OpportunityFeedProps {
+  opportunities: Opportunity[];
+  student: StudentProfile;
+  savedIds: string[];
+  appliedIds: string[];
+  onToggleSave: (id: string) => void;
+  onToggleApplied: (id: string) => void;
+  onAskAboutOpportunity: (opportunity: Opportunity) => void;
+  searchQuery: string;
+  setSearchQuery: (q: string) => void;
+  onOpenIngest: () => void;
+  activeFilter?: FeedFilter;
+  onFilterChange?: (filter: FeedFilter) => void;
+}
 
 export const OpportunityFeed: React.FC<OpportunityFeedProps> = ({
   opportunities,
@@ -29,8 +44,12 @@ export const OpportunityFeed: React.FC<OpportunityFeedProps> = ({
   searchQuery,
   setSearchQuery,
   onOpenIngest,
+  activeFilter,
+  onFilterChange,
 }) => {
-  const [activeFilter, setActiveFilter] = useState<FeedFilter>("all");
+  const [internalFilter, setInternalFilter] = useState<FeedFilter>("all");
+  const currentFilter = activeFilter !== undefined ? activeFilter : internalFilter;
+  const setFilter = onFilterChange || setInternalFilter;
   const [selectedCategory, setSelectedCategory] = useState<string>("All");
 
   const categories = ["All", "Internship", "Scholarship", "Graduate Trainee", "Fellowship"];
@@ -42,9 +61,9 @@ export const OpportunityFeed: React.FC<OpportunityFeedProps> = ({
 
     return opportunities.filter((opp) => {
       // 1. Tab filter
-      if (activeFilter === "saved" && !savedIds.includes(opp.id)) return false;
-      if (activeFilter === "applied" && !appliedIds.includes(opp.id)) return false;
-      if (activeFilter === "match") {
+      if (currentFilter === "saved" && !savedIds.includes(opp.id)) return false;
+      if (currentFilter === "applied" && !appliedIds.includes(opp.id)) return false;
+      if (currentFilter === "match") {
         const hasMatch = opp.requirements.some((req) =>
           studentSkillsLower.some((s) => req.toLowerCase().includes(s) || s.includes(req.toLowerCase()))
         );
@@ -65,18 +84,30 @@ export const OpportunityFeed: React.FC<OpportunityFeedProps> = ({
 
       return true;
     });
-  }, [opportunities, student, activeFilter, selectedCategory, searchQuery, savedIds, appliedIds]);
+  }, [opportunities, student, currentFilter, selectedCategory, searchQuery, savedIds, appliedIds]);
 
   return (
     <div className="space-y-5">
+      {/* Feed Page Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-1">
+        <div>
+          <h1 className="text-xl sm:text-2xl font-bold text-white tracking-tight">
+            Verified Opportunities Feed
+          </h1>
+          <p className="text-xs text-gray-400 mt-0.5">
+            Active internships, scholarships, and graduate trainee roles across Uganda
+          </p>
+        </div>
+      </div>
+
       {/* Feed Controls Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         {/* Filter Tabs */}
         <div className="flex items-center gap-1.5 p-1 rounded-xl bg-surface/90 border border-white/5 overflow-x-auto">
           <button
-            onClick={() => setActiveFilter("all")}
+            onClick={() => setFilter("all")}
             className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all shrink-0 ${
-              activeFilter === "all"
+              currentFilter === "all"
                 ? "bg-emerald-500 text-black font-bold shadow-sm"
                 : "text-gray-400 hover:text-white"
             }`}
@@ -85,9 +116,9 @@ export const OpportunityFeed: React.FC<OpportunityFeedProps> = ({
           </button>
 
           <button
-            onClick={() => setActiveFilter("match")}
+            onClick={() => setFilter("match")}
             className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all flex items-center gap-1 shrink-0 ${
-              activeFilter === "match"
+              currentFilter === "match"
                 ? "bg-emerald-500 text-black font-bold shadow-sm"
                 : "text-gray-400 hover:text-white"
             }`}
@@ -97,9 +128,9 @@ export const OpportunityFeed: React.FC<OpportunityFeedProps> = ({
           </button>
 
           <button
-            onClick={() => setActiveFilter("saved")}
+            onClick={() => setFilter("saved")}
             className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all flex items-center gap-1 shrink-0 ${
-              activeFilter === "saved"
+              currentFilter === "saved"
                 ? "bg-emerald-500 text-black font-bold shadow-sm"
                 : "text-gray-400 hover:text-white"
             }`}
@@ -109,9 +140,9 @@ export const OpportunityFeed: React.FC<OpportunityFeedProps> = ({
           </button>
 
           <button
-            onClick={() => setActiveFilter("applied")}
+            onClick={() => setFilter("applied")}
             className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all flex items-center gap-1 shrink-0 ${
-              activeFilter === "applied"
+              currentFilter === "applied"
                 ? "bg-emerald-500 text-black font-bold shadow-sm"
                 : "text-gray-400 hover:text-white"
             }`}
@@ -161,17 +192,17 @@ export const OpportunityFeed: React.FC<OpportunityFeedProps> = ({
           <Search className="w-10 h-10 text-gray-500 mx-auto mb-3" />
           <h3 className="text-base font-bold text-white">No matching opportunities found</h3>
           <p className="text-xs text-gray-400 mt-1 max-w-sm mx-auto">
-            {activeFilter === "saved"
+            {currentFilter === "saved"
               ? "You haven't bookmarked any listings yet. Click the bookmark icon on any card to save it."
-              : activeFilter === "applied"
+              : currentFilter === "applied"
               ? "You haven't marked any applications as sent yet. Track your pipeline here."
               : "Try adjusting your search terms or category filter, or paste a new listing from WhatsApp."}
           </p>
           <div className="mt-4 flex items-center justify-center gap-2">
-            {activeFilter !== "all" && (
+            {currentFilter !== "all" && (
               <button
                 onClick={() => {
-                  setActiveFilter("all");
+                  setFilter("all");
                   setSelectedCategory("All");
                   setSearchQuery("");
                 }}

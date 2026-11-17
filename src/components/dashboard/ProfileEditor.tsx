@@ -107,7 +107,7 @@ export const ProfileEditor: React.FC<ProfileEditorProps> = ({
               <User className="w-5 h-5" />
             </div>
             <div>
-              <h2 className="text-lg font-bold text-white">Student Career Profile</h2>
+              <h1 className="text-lg font-bold text-white">Student Career Profile</h1>
               <p className="text-xs text-gray-400">
                 Used strictly by the Gemini AI Advisor to recommend real opportunities.
               </p>

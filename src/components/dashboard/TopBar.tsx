@@ -42,12 +42,13 @@ export const TopBar: React.FC<TopBarProps> = ({
     <header className="sticky top-0 z-30 w-full glass-panel border-b border-white/5 dark:border-white/5 px-4 sm:px-6 py-3 flex items-center justify-between gap-3">
       {/* Search Input */}
       <div className="relative flex-1 max-w-md">
-        <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+        <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" aria-hidden="true" />
         <input
           type="text"
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           placeholder="Search internships, skills (e.g. React, Python), or orgs..."
+          aria-label="Search opportunities, skills, or organizations"
           className="w-full pl-10 pr-4 py-2 text-xs sm:text-sm rounded-xl bg-white/80 dark:bg-surface/90 border border-black/10 dark:border-white/10 text-gray-800 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:border-emerald-500/50 focus:ring-1 focus:ring-emerald-500/50 transition-all"
         />
       </div>
@@ -57,19 +58,21 @@ export const TopBar: React.FC<TopBarProps> = ({
         {/* Quick Ingest Button */}
         <button
           onClick={onOpenIngest}
+          aria-label="Paste raw listing to extract"
           className="glass-button px-3 py-2 rounded-xl text-xs font-semibold flex items-center gap-1.5 shadow-sm"
           title="Paste raw WhatsApp or LinkedIn listing to extract"
         >
-          <Plus className="w-4 h-4 text-emerald-400" />
+          <Plus className="w-4 h-4 text-emerald-400" aria-hidden="true" />
           <span className="hidden sm:inline">Paste Listing</span>
         </button>
 
         {/* Quick Advisor Trigger */}
         <button
           onClick={onOpenAdvisor}
+          aria-label="Open AI Career Advisor"
           className="px-3 py-2 rounded-xl text-xs font-semibold bg-emerald-500 text-black hover:bg-emerald-400 transition-colors flex items-center gap-1.5 shadow-md shadow-emerald-950/40"
         >
-          <Sparkles className="w-3.5 h-3.5 fill-black" />
+          <Sparkles className="w-3.5 h-3.5 fill-black" aria-hidden="true" />
           <span className="hidden sm:inline">Ask Advisor</span>
           <span className="sm:hidden">AI</span>
         </button>
@@ -78,12 +81,13 @@ export const TopBar: React.FC<TopBarProps> = ({
         <button
           onClick={toggleTheme}
           title={theme === "dark" ? "Switch to Light Mode" : "Switch to Dark Mode"}
+          aria-label={theme === "dark" ? "Switch to Light Mode" : "Switch to Dark Mode"}
           className="p-2 rounded-xl glass-button border border-white/10 dark:border-white/10 hover:border-emerald-500/40 transition-all text-gray-400 hover:text-emerald-400"
         >
           {theme === "dark" ? (
-            <Sun className="w-4 h-4" />
+            <Sun className="w-4 h-4" aria-hidden="true" />
           ) : (
-            <Moon className="w-4 h-4" />
+            <Moon className="w-4 h-4" aria-hidden="true" />
           )}
         </button>
 
@@ -91,6 +95,8 @@ export const TopBar: React.FC<TopBarProps> = ({
         <div className="relative">
           <button
             onClick={() => setShowDropdown(!showDropdown)}
+            aria-label={`Student profile options for ${activeProfile.name}`}
+            aria-expanded={showDropdown}
             className="flex items-center gap-2 px-2.5 sm:px-3 py-1.5 rounded-xl bg-surface/90 border border-emerald-500/30 hover:border-emerald-500/60 transition-all text-left"
           >
             <div className="w-7 h-7 rounded-lg bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center text-emerald-300 font-bold text-xs">

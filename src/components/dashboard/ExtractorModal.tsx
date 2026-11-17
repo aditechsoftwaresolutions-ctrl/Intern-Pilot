@@ -56,11 +56,10 @@ export const ExtractorModal: React.FC<ExtractorModalProps> = ({ onPublish, onClo
       if (json.data) {
         setExtractedData(json.data);
       } else {
-        setErrorMsg(json.error || "Failed to extract opportunity fields.");
+        setErrorMsg(json.error || "Failed to extract opportunity fields. Ensure the post includes job details or deadline.");
       }
-    } catch (err) {
-      console.error(err);
-      setErrorMsg("Network error contacting Gemini extractor endpoint.");
+    } catch {
+      setErrorMsg("Network error contacting Gemini extractor endpoint. Please verify your connection.");
     } finally {
       setIsExtracting(false);
     }
@@ -100,9 +99,9 @@ export const ExtractorModal: React.FC<ExtractorModalProps> = ({ onPublish, onClo
             <Sparkles className="w-5 h-5" />
           </div>
           <div>
-            <h2 className="text-base sm:text-lg font-bold text-white">
+            <h1 className="text-base sm:text-lg font-bold text-white">
               Messy Post Extractor (Gemini 2.5 Flash)
-            </h2>
+            </h1>
             <p className="text-xs text-gray-400">
               Paste unformatted WhatsApp messages or LinkedIn posts to extract structured listings.
             </p>

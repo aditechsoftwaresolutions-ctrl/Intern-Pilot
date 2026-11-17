@@ -90,8 +90,7 @@ export const AdvisorDrawer: React.FC<AdvisorDrawerProps> = ({
       };
 
       setMessages((prev) => [...prev, botMsg]);
-    } catch (err) {
-      console.error(err);
+    } catch {
       setMessages((prev) => [
         ...prev,
         {
@@ -116,9 +115,15 @@ export const AdvisorDrawer: React.FC<AdvisorDrawerProps> = ({
           </div>
           <div>
             <div className="flex items-center gap-1.5">
-              <h2 className="text-sm sm:text-base font-bold text-white">
-                InternPilot AI Advisor
-              </h2>
+              {isDrawer ? (
+                <h2 className="text-sm sm:text-base font-bold text-white">
+                  InternPilot AI Advisor
+                </h2>
+              ) : (
+                <h1 className="text-sm sm:text-base font-bold text-white">
+                  InternPilot AI Advisor
+                </h1>
+              )}
               <span className="text-[10px] px-1.5 py-0.2 rounded font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
                 gemini-2.5-flash
               </span>

@@ -4,9 +4,10 @@ import { CheckCircle2, Bookmark, Flame } from "lucide-react";
 interface ReadinessGaugeProps {
   score: number; // 0 - 100
   appliedCount: number;
-  monthlyGoal: number;
+  monthlyGoal?: number;
   openCount: number;
   savedCount: number;
+  onSelectFilter?: (filter: "all" | "saved" | "applied") => void;
 }
 
 export const ReadinessGauge: React.FC<ReadinessGaugeProps> = ({
@@ -15,6 +16,7 @@ export const ReadinessGauge: React.FC<ReadinessGaugeProps> = ({
   monthlyGoal = 5,
   openCount,
   savedCount,
+  onSelectFilter,
 }) => {
   // SVG arc calculation for semi-circular gauge
   const radius = 70;
@@ -90,31 +92,46 @@ export const ReadinessGauge: React.FC<ReadinessGaugeProps> = ({
         </div>
       </div>
 
-      {/* 3 Compact Summary Pills */}
+      {/* 3 Compact Summary Interactive Pills */}
       <div className="grid grid-cols-3 gap-2 pt-3 border-t border-white/5">
-        <div className="bg-surface/80 rounded-xl p-2.5 text-center border border-white/5">
-          <div className="text-[11px] text-gray-400 flex items-center justify-center gap-1">
+        <button
+          type="button"
+          onClick={() => onSelectFilter?.("all")}
+          className="bg-surface/80 rounded-xl p-2.5 text-center border border-white/5 hover:border-emerald-500/30 transition-all text-left sm:text-center group"
+          title="Filter all open opportunities"
+        >
+          <div className="text-[11px] text-gray-400 group-hover:text-emerald-400 flex items-center justify-center gap-1">
             <span className="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
             Open
           </div>
           <div className="text-base font-bold text-white mt-0.5">{openCount}</div>
-        </div>
+        </button>
 
-        <div className="bg-surface/80 rounded-xl p-2.5 text-center border border-white/5">
-          <div className="text-[11px] text-gray-400 flex items-center justify-center gap-1">
+        <button
+          type="button"
+          onClick={() => onSelectFilter?.("saved")}
+          className="bg-surface/80 rounded-xl p-2.5 text-center border border-white/5 hover:border-amber-500/30 transition-all text-left sm:text-center group"
+          title="Filter saved opportunities"
+        >
+          <div className="text-[11px] text-gray-400 group-hover:text-amber-400 flex items-center justify-center gap-1">
             <Bookmark className="w-3 h-3 text-amber-400" />
             Saved
           </div>
           <div className="text-base font-bold text-white mt-0.5">{savedCount}</div>
-        </div>
+        </button>
 
-        <div className="bg-surface/80 rounded-xl p-2.5 text-center border border-white/5">
-          <div className="text-[11px] text-gray-400 flex items-center justify-center gap-1">
+        <button
+          type="button"
+          onClick={() => onSelectFilter?.("applied")}
+          className="bg-surface/80 rounded-xl p-2.5 text-center border border-white/5 hover:border-emerald-500/30 transition-all text-left sm:text-center group"
+          title="Filter applied opportunities"
+        >
+          <div className="text-[11px] text-gray-400 group-hover:text-emerald-300 flex items-center justify-center gap-1">
             <CheckCircle2 className="w-3 h-3 text-emerald-400" />
             Applied
           </div>
           <div className="text-base font-bold text-white mt-0.5">{appliedCount}</div>
-        </div>
+        </button>
       </div>
     </div>
   );

@@ -36,6 +36,23 @@ function LoginForm() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrorMsg("");
+
+    const cleanEmail = email.trim();
+    if (!cleanEmail || !cleanEmail.includes("@") || !cleanEmail.includes(".")) {
+      setErrorMsg("Please enter a valid student or institutional email (e.g. student@mak.ac.ug).");
+      return;
+    }
+
+    if (isSignUp && !name.trim()) {
+      setErrorMsg("Please enter your full student name.");
+      return;
+    }
+
+    if (password.length < 6) {
+      setErrorMsg("Password must be at least 6 characters long.");
+      return;
+    }
+
     setIsLoading(true);
 
     try {
@@ -44,8 +61,8 @@ function LoginForm() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           mode: isSignUp ? "signup" : "login",
-          name,
-          email,
+          name: name.trim(),
+          email: cleanEmail,
           password,
           _hp_verify: honeypot,
         }),
@@ -53,21 +70,25 @@ function LoginForm() {
 
       const json = await res.json();
       if (!res.ok) {
-        setErrorMsg(json.error || "Authentication failed. Please check your credentials.");
+        if (res.status === 429) {
+          setErrorMsg("Too many authentication attempts. Please wait 60 seconds before trying again.");
+        } else {
+          setErrorMsg(json.error || "Authentication failed. Please verify your credentials.");
+        }
         return;
       }
 
       router.push(targetUrl);
       router.refresh();
     } catch {
-      setErrorMsg("Network error. Please try again.");
+      setErrorMsg("Unable to reach authentication server. Please check your connection and try again.");
     } finally {
       setIsLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen w-screen flex items-center justify-center p-4 bg-[#080D0B] text-white relative overflow-hidden selection:bg-emerald-500/30">
+    <div className="min-h-screen w-full flex items-center justify-center p-4 bg-[#080D0B] text-white relative overflow-hidden selection:bg-emerald-500/30">
       {/* Subtle emerald ambient glows */}
       <div className="absolute -top-32 -left-32 w-96 h-96 bg-emerald-500/10 rounded-full blur-[120px] pointer-events-none" />
       <div className="absolute -bottom-32 -right-32 w-96 h-96 bg-emerald-600/10 rounded-full blur-[120px] pointer-events-none" />
@@ -357,8 +378,15 @@ export default function LoginPage() {
   return (
     <Suspense
       fallback={
-        <div className="min-h-screen bg-[#080D0B] flex items-center justify-center text-emerald-400 text-xs font-semibold">
-          Loading InternPilot...
+        <div className="min-h-screen w-full bg-[#080D0B] flex flex-col items-center justify-center p-4">
+          <div className="glass-card rounded-2xl p-8 flex flex-col items-center gap-3 border border-emerald-500/30 shadow-2xl">
+            <div className="w-12 h-12 rounded-xl bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center text-emerald-300">
+              <Compass className="w-6 h-6 stroke-[2.2] animate-spin" />
+            </div>
+            <span className="text-xs font-semibold text-emerald-400 tracking-wide">
+              Loading InternPilot...
+            </span>
+          </div>
         </div>
       }
     >

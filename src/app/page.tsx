@@ -21,13 +21,14 @@ import { TopBar } from "@/components/dashboard/TopBar";
 import { StatCard } from "@/components/dashboard/StatCard";
 import { ReadinessGauge } from "@/components/dashboard/ReadinessGauge";
 import { ActivityMatchCard } from "@/components/dashboard/ActivityMatchCard";
-import { OpportunityFeed } from "@/components/dashboard/OpportunityFeed";
+import { OpportunityFeed, FeedFilter } from "@/components/dashboard/OpportunityFeed";
 import { ProfileEditor } from "@/components/dashboard/ProfileEditor";
 import { ExtractorModal } from "@/components/dashboard/ExtractorModal";
 import { AdvisorDrawer } from "@/components/dashboard/AdvisorDrawer";
 
 export default function DashboardPage() {
   const [activeTab, setActiveTab] = useState<TabType>("overview");
+  const [feedFilter, setFeedFilter] = useState<FeedFilter>("all");
   const [profiles, setProfiles] = useState<StudentProfile[]>(SEED_PROFILES);
   const [activeProfile, setActiveProfile] = useState<StudentProfile>(SEED_PROFILES[0]);
   const [opportunities, setOpportunities] = useState<Opportunity[]>(SEED_OPPORTUNITIES);
@@ -101,7 +102,7 @@ export default function DashboardPage() {
   }, [opportunities]);
 
   return (
-    <div className="flex h-screen w-screen overflow-hidden bg-background">
+    <div className="flex h-screen w-full overflow-hidden bg-background">
       {/* Desktop Sidebar */}
       <Sidebar
         activeTab={activeTab}
@@ -116,7 +117,12 @@ export default function DashboardPage() {
           profiles={profiles}
           onSwitchProfile={(p) => setActiveProfile(p)}
           searchQuery={searchQuery}
-          setSearchQuery={setSearchQuery}
+          setSearchQuery={(q) => {
+            setSearchQuery(q);
+            if (q.trim() && activeTab !== "opportunities") {
+              setActiveTab("opportunities");
+            }
+          }}
           onOpenAdvisor={() => setIsAdvisorDrawerOpen(true)}
           onOpenIngest={() => setActiveTab("ingest")}
         />
@@ -171,7 +177,10 @@ export default function DashboardPage() {
                 <ActivityMatchCard
                   opportunities={opportunities}
                   student={activeProfile}
-                  onExploreMatches={() => setActiveTab("opportunities")}
+                  onExploreMatches={() => {
+                    setFeedFilter("match");
+                    setActiveTab("opportunities");
+                  }}
                 />
                 <ReadinessGauge
                   score={84}
@@ -179,6 +188,10 @@ export default function DashboardPage() {
                   monthlyGoal={5}
                   openCount={opportunities.length}
                   savedCount={savedIds.length}
+                  onSelectFilter={(filter) => {
+                    setFeedFilter(filter);
+                    setActiveTab("opportunities");
+                  }}
                 />
               </div>
 
@@ -191,7 +204,10 @@ export default function DashboardPage() {
                   icon={Briefcase}
                   badge="Top Fit"
                   variant="emerald"
-                  onClick={() => setActiveTab("opportunities")}
+                  onClick={() => {
+                    setFeedFilter("match");
+                    setActiveTab("opportunities");
+                  }}
                 />
                 <StatCard
                   label="Closing Soon"
@@ -200,7 +216,10 @@ export default function DashboardPage() {
                   icon={Clock}
                   badge="Urgent"
                   variant="amber"
-                  onClick={() => setActiveTab("opportunities")}
+                  onClick={() => {
+                    setFeedFilter("all");
+                    setActiveTab("opportunities");
+                  }}
                 />
                 <StatCard
                   label="Saved Listings"
@@ -208,7 +227,10 @@ export default function DashboardPage() {
                   subtext="Bookmarked for later"
                   icon={Bookmark}
                   variant="sky"
-                  onClick={() => setActiveTab("opportunities")}
+                  onClick={() => {
+                    setFeedFilter("saved");
+                    setActiveTab("opportunities");
+                  }}
                 />
                 <StatCard
                   label="Applications Sent"
@@ -216,7 +238,10 @@ export default function DashboardPage() {
                   subtext="Active pipeline"
                   icon={CheckCircle2}
                   variant="purple"
-                  onClick={() => setActiveTab("opportunities")}
+                  onClick={() => {
+                    setFeedFilter("applied");
+                    setActiveTab("opportunities");
+                  }}
                 />
               </div>
 
@@ -262,6 +287,8 @@ export default function DashboardPage() {
               searchQuery={searchQuery}
               setSearchQuery={setSearchQuery}
               onOpenIngest={() => setActiveTab("ingest")}
+              activeFilter={feedFilter}
+              onFilterChange={setFeedFilter}
             />
           )}
 

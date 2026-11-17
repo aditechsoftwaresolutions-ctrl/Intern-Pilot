@@ -2,6 +2,16 @@
 const nextConfig = {
   reactStrictMode: true,
   poweredByHeader: false, // Turn off X-Powered-By to prevent framework fingerprinting
+  productionBrowserSourceMaps: false, // Explicitly disable production browser source maps to prevent exposing raw code
+  compress: true, // Enable Brotli and Gzip compression for faster asset transfers
+
+  compiler: {
+    removeConsole: process.env.NODE_ENV === "production" ? { exclude: ["error"] } : false,
+  },
+
+  experimental: {
+    optimizePackageImports: ["lucide-react"],
+  },
 
   async headers() {
     return [

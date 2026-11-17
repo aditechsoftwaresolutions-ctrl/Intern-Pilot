@@ -83,6 +83,24 @@ All MVP, UI/UX refinement, and security hardening tasks completed and verified.
   - [x] Structured security audit logger in `src/lib/audit.ts`.
   - [x] Parameterized SQL query enforcement via Supabase PostgREST SDK.
 
+### T-008: Production Polish: SEO, Metadata, UX Refinement & Dev Hygiene (Phase 8)
+- Priority: P1
+- Status: Done
+- Acceptance criteria:
+  - [x] Dynamic and static SEO metadata configured with metadataBase, canonical URLs, descriptive titles, and social previews (`src/app/layout.tsx`, `src/app/login/layout.tsx`).
+  - [x] Custom brand assets and icons generated (`public/icon.svg`, `public/favicon.ico`, `public/apple-icon.png`, `public/manifest.json`, `src/app/icon.tsx`, `src/app/apple-icon.tsx`).
+  - [x] Custom 1200x630 Open Graph & Twitter share images created (`public/og-image.png`, `src/app/opengraph-image.tsx`, `src/app/twitter-image.tsx`).
+  - [x] Sitemaps and crawler policies generated via Next.js App Router (`src/app/sitemap.ts`, `src/app/robots.ts`).
+  - [x] Custom branded 404 error page implemented (`src/app/not-found.tsx`).
+  - [x] Custom branded error boundary implemented (`src/app/error.tsx`).
+  - [x] Full-fidelity dashboard loading skeleton implemented (`src/app/loading.tsx`) and login Suspense fallback polished.
+  - [x] Semantic heading hierarchy audited with exactly one H1 per page/tab view.
+  - [x] Accessible button and input labels (`aria-label`, `aria-hidden`) added to dashboard controls.
+  - [x] Mobile responsiveness hardened (`w-full min-h-screen`, touch target padding, bottom nav clearance).
+  - [x] Dead click targets eliminated: StatCards and ReadinessGauge pills linked directly to feed filters.
+  - [x] Dev hygiene and bundle optimization: `productionBrowserSourceMaps: false`, `compress: true`, compiler `removeConsole`, and `optimizePackageImports: ["lucide-react"]` configured in `next.config.js`.
+  - [x] `npm run build` and `npm run lint` verified passing with zero errors.
+
 ## Later (Post-Hackathon)
 - SMS / WhatsApp deadline reminders via Africa's Talking API.
 - Tailored CV bullet point and cover letter generator per listing.
